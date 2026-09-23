@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ilya Khalafi — AI Engineer</title>
+<meta name="description" content="Ilya Khalafi — AI Engineer. LLM post-training, retrieval-augmented generation, knowledge graphs, and large-scale data pipelines.">
+<meta name="author" content="Ilya Khalafi">
+<meta property="og:title" content="Ilya Khalafi — AI Engineer">
+<meta property="og:description" content="Building production LLM systems, retrieval pipelines, and the data infrastructure behind them.">
+<meta property="og:type" content="profile">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%230b1120'/><text y='68' x='50' text-anchor='middle' font-size='54' font-family='monospace' fill='%2338bdf8'>IK</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b1120; --bg-alt:#0f172a; --card:#111c33; --card-2:#152340;
+  --line:#1e2f52; --line-soft:#1a2947;
+  --fg:#e6edf7; --fg-muted:#9fb0cb; --fg-dim:#6f83a3;
+  --accent:#38bdf8; --accent-2:#818cf8; --accent-3:#34d399;
+  --chip:#152340; --chip-fg:#bcd3ef;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 30px rgba(0,0,0,.35);
+  --radius:14px;
+  --max:1080px;
+}
+html[data-theme="light"]{
+  --bg:#f7f9fc; --bg-alt:#ffffff; --card:#ffffff; --card-2:#f2f6fb;
+  --line:#e2e8f0; --line-soft:#eef2f7;
+  --fg:#0f172a; --fg-muted:#475569; --fg-dim:#7b8aa1;
+  --accent:#0284c7; --accent-2:#4f46e5; --accent-3:#059669;
+  --chip:#eef4fb; --chip-fg:#25405f;
+  --shadow:0 1px 2px rgba(15,23,42,.06),0 8px 26px rgba(15,23,42,.07);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--fg);
+  font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  font-size:16px;line-height:1.65;letter-spacing:-.005em;
+  overflow-x:hidden;
+}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+code,.mono{font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 24px}
+h1,h2,h3,h4{line-height:1.25;margin:0;letter-spacing:-.02em}
+
+/* ---------- background glow ---------- */
+.glow{position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(600px 400px at 12% -5%, color-mix(in srgb,var(--accent) 18%,transparent), transparent 70%),
+    radial-gradient(700px 500px at 92% 8%, color-mix(in srgb,var(--accent-2) 15%,transparent), transparent 70%);
+  opacity:.7}
+html[data-theme="light"] .glow{opacity:.5}
+
+/* ---------- nav ---------- */
+header.nav{position:sticky;top:0;z-index:50;
+  backdrop-filter:saturate(1.6) blur(12px);
+  background:color-mix(in srgb,var(--bg) 78%,transparent);
+  border-bottom:1px solid transparent;transition:border-color .2s,background .2s}
+header.nav.scrolled{border-bottom-color:var(--line)}
+.nav-in{display:flex;align-items:center;gap:16px;height:62px;max-width:var(--max);margin:0 auto;padding:0 24px}
+.brand{font-weight:700;letter-spacing:-.03em;font-size:15px;display:flex;align-items:center;gap:9px;color:var(--fg)}
+.brand:hover{text-decoration:none}
+.brand .dot{width:9px;height:9px;border-radius:50%;background:var(--accent-3);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent-3) 22%,transparent)}
+nav.links{margin-left:auto;display:flex;gap:4px;align-items:center}
+nav.links a{color:var(--fg-muted);font-size:13.5px;font-weight:500;padding:7px 11px;border-radius:8px}
+nav.links a:hover{color:var(--fg);background:var(--card);text-decoration:none}
+.icon-btn{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;border:1px solid var(--line);
+  background:var(--card);color:var(--fg-muted);cursor:pointer;flex:none}
+.icon-btn:hover{color:var(--fg);border-color:var(--accent)}
+@media(max-width:760px){nav.links a{display:none}}
+
+/* ---------- hero ---------- */
+.hero{position:relative;z-index:1;padding:76px 0 24px}
+.hero-grid{display:grid;grid-template-columns:auto 1fr;gap:64px;align-items:center}
+.hero-text{padding-left:24px}
+@media(max-width:820px){.hero-grid{grid-template-columns:1fr;gap:32px}.hero-text{padding-left:0}}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:12.5px;font-weight:600;
+  color:var(--accent-3);background:color-mix(in srgb,var(--accent-3) 12%,transparent);
+  border:1px solid color-mix(in srgb,var(--accent-3) 28%,transparent);
+  padding:5px 12px;border-radius:999px;letter-spacing:.01em}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--accent-3);animation:pulse 2.2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.35;transform:scale(.82)}}
+h1.name{font-size:clamp(2.4rem,6vw,3.65rem);font-weight:800;margin:18px 0 10px;letter-spacing:-.035em}
+.grad{background:linear-gradient(100deg,var(--accent),var(--accent-2) 55%,var(--accent-3));
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.role{font-size:clamp(1.05rem,2.4vw,1.3rem);font-weight:600;color:var(--fg-muted);margin-bottom:16px}
+.role .sep{color:var(--fg-dim);margin:0 8px}
+.lede{color:var(--fg-muted);max-width:62ch;font-size:16.5px}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:10px;
+  font-size:14px;font-weight:600;border:1px solid var(--line);background:var(--card);color:var(--fg);
+  transition:transform .15s,border-color .15s,background .15s}
+.btn:hover{text-decoration:none;transform:translateY(-2px);border-color:var(--accent)}
+.btn.primary{background:linear-gradient(100deg,var(--accent),var(--accent-2));border-color:transparent;color:#08111f}
+html[data-theme="light"] .btn.primary{color:#fff}
+.btn svg{width:16px;height:16px}
+.btn img.mark{width:17px;height:17px;object-fit:contain;flex:none}
+.btn .mark-tile{width:20px;height:20px;border-radius:5px;background:#fff;display:grid;place-items:center;padding:2px;flex:none}
+.btn .mark-tile img,.btn .mark-tile svg{width:100%;height:100%;object-fit:contain}
+.avatar{position:relative;width:300px;height:300px;flex:none}
+.avatar img{width:100%;height:100%;border-radius:26px;object-fit:cover;
+  border:1px solid var(--line);box-shadow:var(--shadow);background:var(--card)}
+.avatar::after{content:"";position:absolute;inset:-14px;border-radius:36px;z-index:-1;
+  background:linear-gradient(140deg,var(--accent),var(--accent-2));filter:blur(30px);opacity:.35}
+@media(max-width:820px){.avatar{width:220px;height:220px}}
+
+
+/* ---------- sections ---------- */
+section{position:relative;z-index:1;padding:56px 0;scroll-margin-top:70px}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:28px}
+.sec-head h2{font-size:1.5rem;font-weight:700}
+.sec-head .num{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent);font-weight:600}
+.sec-head .rule{flex:1;height:1px;background:var(--line)}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow)}
+
+/* timeline */
+.timeline{position:relative;padding-left:26px}
+.timeline::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:2px;
+  background:linear-gradient(var(--accent),var(--accent-2),transparent)}
+.item{position:relative;margin-bottom:22px}
+.item::before{content:"";position:absolute;left:-25px;top:20px;width:11px;height:11px;border-radius:50%;
+  background:var(--bg);border:2px solid var(--accent)}
+.item-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 12px}
+.item-head h3{font-size:1.06rem;font-weight:700}
+.org{color:var(--accent);font-weight:600;font-size:14.5px}
+.meta{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--fg-dim);white-space:nowrap}
+@media(max-width:620px){.meta{margin-left:0}}
+.desc{color:var(--fg-muted);font-size:14.5px;margin:4px 0 0}
+ul.bullets{margin:12px 0 0;padding-left:0;list-style:none}
+ul.bullets li{position:relative;padding-left:20px;color:var(--fg-muted);font-size:14.5px;margin-bottom:7px}
+ul.bullets li::before{content:"▸";position:absolute;left:0;color:var(--accent);font-size:12px;top:1px}
+ul.bullets li strong{color:var(--fg);font-weight:600}
+
+/* grids */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:860px){.grid-2,.grid-3{grid-template-columns:1fr}}
+
+/* skills */
+.skill-block{margin-bottom:8px}
+.skill-block h4{font-size:14px;font-weight:700;margin-bottom:11px;display:flex;align-items:center;gap:9px}
+.skill-block h4 i{width:6px;height:6px;border-radius:2px;background:var(--accent);transform:rotate(45deg);flex:none}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{font-size:12.5px;font-weight:500;padding:4.5px 10px;border-radius:7px;
+  background:var(--chip);color:var(--chip-fg);border:1px solid var(--line-soft);
+  font-family:'JetBrains Mono',monospace;transition:border-color .15s,color .15s,transform .15s}
+.chip:hover{border-color:var(--accent);color:var(--fg);transform:translateY(-1px)}
+
+/* project cards */
+.proj{display:flex;flex-direction:column;gap:10px;transition:transform .18s,border-color .18s}
+.proj:hover{transform:translateY(-3px);border-color:var(--accent)}
+.proj .top{display:flex;align-items:flex-start;gap:10px}
+.proj h3{font-size:1rem;font-weight:700;flex:1}
+.proj .yr{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--fg-dim)}
+.proj p{margin:0;color:var(--fg-muted);font-size:14px;flex:1}
+.proj .chips{margin-top:auto}
+
+/* teaching table */
+.teach{display:grid;gap:10px}
+.trow{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-rows:auto auto;gap:4px 16px;align-items:baseline;
+  padding:13px 16px;border:1px solid var(--line);border-radius:11px;background:var(--card);transition:border-color .15s}
+.trow:hover{border-color:var(--accent)}
+.trow .logo{grid-column:1;grid-row:1/3;align-self:center;width:40px;height:40px;border-radius:10px;padding:5px}
+.trow .t{grid-column:2;grid-row:1;text-align:left;font-weight:600;font-size:14.5px}
+.trow .i{grid-column:2;grid-row:2;text-align:left;font-size:13px;color:var(--fg-muted)}
+.trow .d{grid-column:3;grid-row:1/3;align-self:center;font-family:'JetBrains Mono',monospace;font-size:11.5px;
+  color:var(--fg-dim);text-align:right;white-space:nowrap}
+@media(max-width:620px){
+  .trow{grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto auto}
+  .trow .logo{grid-row:1/4}
+  .trow .d{grid-column:2;grid-row:3;text-align:left}
+}
+
+/* education / company logo */
+.edu-head,.exp-head{display:flex;gap:16px;align-items:flex-start}
+.logo{flex:none;width:58px;height:58px;border-radius:12px;background:#fff;border:1px solid var(--line);
+  display:grid;place-items:center;padding:7px;box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.logo img{width:100%;height:100%;object-fit:contain}
+.logo.mono-badge{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;color:#25405f;letter-spacing:-.04em}
+.edu-body{flex:1;min-width:0}
+.item-head .where{flex-basis:100%;text-align:right;margin-top:0;line-height:1.35;
+  font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--fg-dim)}
+@media(max-width:620px){.item-head .where{text-align:left}}
+@media(max-width:620px){.logo{width:46px;height:46px}}
+
+/* award */
+.award{display:flex;gap:14px;align-items:flex-start}
+.award .medal{font-size:22px;line-height:1;flex:none;width:42px;height:42px;display:grid;place-items:center;
+  border-radius:11px;background:var(--card-2);border:1px solid var(--line)}
+.award h3{font-size:1rem;font-weight:700}
+.award .when{display:block;margin-top:4px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--fg-dim)}
+.award p{margin:8px 0 0;color:var(--fg-muted);font-size:14px}
+
+/* langs */
+.bar{height:7px;border-radius:99px;background:var(--card-2);overflow:hidden;margin-top:9px;border:1px solid var(--line-soft)}
+.bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+
+/* contact */
+.contact{text-align:center;padding:56px 30px;
+  background:linear-gradient(160deg,var(--card),var(--card-2));border:1px solid var(--line);border-radius:20px}
+.contact h2{font-size:1.7rem;font-weight:800;margin-bottom:10px}
+.contact p{color:var(--fg-muted);max-width:52ch;margin:0 auto 24px}
+
+footer{position:relative;z-index:1;border-top:1px solid var(--line);margin-top:56px;padding:26px 0 44px;
+  color:var(--fg-dim);font-size:13px;display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between}
+
+/* reveal */
+.reveal{opacity:0;transform:translateY(16px)}
+.reveal.in{opacity:1;transform:none;transition:opacity .55s ease,transform .55s cubic-bezier(.2,.7,.3,1)}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}html{scroll-behavior:auto}.pulse{animation:none}}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="brand" href="#top"><span class="dot"></span>ilya khalafi</a>
+    <nav class="links">
+      <a href="#about">About</a>
+      <a href="#experience">Experience</a>
+      <a href="#education">Education</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#academic">Academic</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="icon-btn" id="theme" aria-label="Toggle color theme" title="Toggle theme">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="wrap hero-grid">
+    <div class="avatar">
+      <img src="assets/profile.jpg" alt="Ilya Khalafi" loading="eager" width="300" height="300">
+    </div>
+    <div class="hero-text">
+      <span class="eyebrow"><span class="pulse"></span>Open to research projects &amp; positions</span>
+      <h1 class="name">Ilya <span class="grad">Khalafi</span></h1>
+      <div class="role">AI Engineer<span class="sep">/</span>MSc Data Science, University of Tehran</div>
+      <p class="lede">
+        Over the past decade I have built a strong foundation in software engineering, with an
+        increasing focus on deep learning and large-scale AI systems throughout my undergraduate
+        studies. Today I specialize in
+        architecting reliable data pipelines, developing production-ready AI systems, and building
+        backend services for intelligent analytics platforms — with particular emphasis on large
+        language model applications, and on bridging research and production through robust,
+        scalable ML pipelines.
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="mailto:ilyakhalafi14@gmail.com">
+          <span class="mark-tile"><svg viewBox="0 0 52 40" aria-hidden="true"><path fill="#4285f4" d="M3.64 40h8.18V20.18L0 10.91v25.45C0 38.37 1.64 40 3.64 40z"/><path fill="#34a853" d="M40.18 40h8.18c2.01 0 3.64-1.64 3.64-3.64V10.91l-11.82 9.27V40z"/><path fill="#fbbc04" d="M40.18 3.64v16.54L52 10.91V5.45c0-5.05-5.77-7.94-9.82-4.91l-2 1.5z"/><path fill="#ea4335" d="M11.82 20.18V3.64L26 14.27 40.18 3.64v16.54L26 30.82z"/><path fill="#c5221f" d="M0 5.45v5.46l11.82 9.27V3.64l-2-1.5C5.76-2.49 0 .4 0 5.45z"/></svg></span>
+          Get in touch
+        </a>
+        <a class="btn" href="https://github.com/IlyaKhalafi" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.73.5.5 5.73.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2c-3.2.7-3.88-1.54-3.88-1.54-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.12 3.05.74.81 1.18 1.83 1.18 3.09 0 4.41-2.69 5.38-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.68.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.73 18.27.5 12 .5z"/></svg>
+          GitHub
+        </a>
+        <a class="btn" href="Ilya-Khalafi-CV.pdf" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
+          Download CV
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="num">01</span><h2>About</h2><span class="rule"></span></div>
+    <div class="grid-2">
+      <div class="card reveal">
+        <h3 style="font-size:1rem;margin-bottom:10px">What I do</h3>
+        <p class="desc" style="margin:0">
+          I build and ship LLM systems end to end: retrieval over millions of chunks with hybrid
+          vector and keyword search, knowledge-graph extraction, agentic workflows over
+          heterogeneous enterprise data, and post-training of open-weight models on multi-GPU
+          clusters — with the data pipelines, backends, and observability that keep them running in
+          production.
+        </p>
+      </div>
+      <div class="card reveal">
+        <h3 style="font-size:1rem;margin-bottom:10px">Focus areas</h3>
+        <div class="chips">
+          <span class="chip">LLM Post-Training</span><span class="chip">RAG &amp; Hybrid Search</span>
+          <span class="chip">Knowledge Graphs</span><span class="chip">Agentic Systems</span>
+          <span class="chip">Data Engineering</span><span class="chip">Distributed Systems</span>
+        </div>
+        <p class="desc">Based in Tehran, Iran — open to remote and relocation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="num">02</span><h2>Professional Experience</h2><span class="rule"></span></div>
+    <div class="timeline">
+
+      <div class="item reveal">
+        <div class="card exp-head">
+          <span class="logo"><img src="assets/resana-logo.png" alt="Resana logo" loading="lazy" width="58" height="58"></span>
+          <div class="edu-body">
+          <div class="item-head">
+            <h3>AI Engineer</h3><a class="org" href="https://resanai.ir/" target="_blank" rel="noopener">Resana</a>
+            <span class="meta">Feb 2026 – Present</span>
+            <span class="where">Tehran, Iran</span>
+          </div>
+          <ul class="bullets">
+            <li>Achieved a score of <strong>80%</strong> on an in-house agent built for a <strong>Japanese partner company</strong>, retrieving facts from <strong>1.5M+ chunks</strong> using knowledge graphs, <strong>Qdrant</strong> hybrid search, <strong>Elasticsearch</strong> keyword search, and other tools.</li>
+            <li><strong>Scored 96%</strong> for another client by converting chart- and table-heavy documents into SQL tables and Qdrant hybrid indexes, answering time-interval questions with a <strong>Qwen3.6-35B</strong> model on <strong>DGX Spark</strong> hardware.</li>
+            <li>Currently fine-tuning <strong>Qwen3.6-35B</strong> with <strong>SFT + LiPO + GSPO</strong> using the <strong>verl</strong> library on a cluster of <strong>8× H200 GPUs</strong> for that agent.</li>
+            <li>Implemented a synthetic data generation pipeline spanning simple conversational, internal security, hallucination-check, SQL, and search-grounded categories with <em>k</em> rollouts for SFT/LiPO; SFT phase stable with <strong>MiCA</strong> initialization, testing LiPO before DAPO/GSPO.</li>
+          </ul>
+          <div class="chips" style="margin-top:14px">
+            <span class="chip">verl</span><span class="chip">SFT</span><span class="chip">Preference Optimization</span>
+            <span class="chip">vLLM</span><span class="chip">LangChain</span><span class="chip">LangGraph</span>
+            <span class="chip">Qdrant</span><span class="chip">Elasticsearch</span>
+            <span class="chip">Knowledge Graphs</span><span class="chip">Synthetic Data Generation</span>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="item reveal">
+        <div class="card exp-head">
+          <span class="logo"><img src="assets/nabaco-logo.png" alt="Nabaco logo" loading="lazy" width="58" height="58"></span>
+          <div class="edu-body">
+          <div class="item-head">
+            <h3>Full Stack AI Engineer</h3><a class="org" href="https://nabacoai.com/" target="_blank" rel="noopener">Nabaco</a>
+            <span class="meta">Oct 2025 – Feb 2026 · Hybrid</span>
+            <span class="where">Tehran, Iran</span>
+          </div>
+          <p class="desc">
+            Worked on <strong style="color:var(--fg)">OneMan-AI</strong>, a business intelligence AI agent
+            for analyzing heterogeneous, islanded databases and files across enterprise environments.
+          </p>
+          <ul class="bullets">
+            <li>Implemented <strong>MCP tools on top of Trino</strong> to integrate multiple data sources — from SQL and NoSQL databases to Excel files — through a unified query layer for the AI agent.</li>
+            <li>Built highly efficient workflows for ingesting structured and unstructured files, and deployed the data engineering pipeline with <strong>Hatchet</strong> for production file-processing workflows.</li>
+            <li>Developed the agent's <strong>schema exploration and intent recognition</strong> capabilities, plus key agentic workflow and backend components.</li>
+            <li>Deployed and maintained platform services including <strong>GitLab</strong>, GitLab Runner, <strong>Langfuse</strong>, and <strong>Portainer</strong>, with CI/CD pipelines for all microservices.</li>
+            <li>Implemented most of the backend services with <strong>Django</strong> and the web UI with <strong>Next.js</strong> for end-to-end delivery of the analytics platform.</li>
+          </ul>
+          <div class="chips" style="margin-top:14px">
+            <span class="chip">Trino</span><span class="chip">MCP</span><span class="chip">Hatchet</span>
+            <span class="chip">LangChain</span><span class="chip">LangGraph</span>
+            <span class="chip">Django</span><span class="chip">Next.js</span><span class="chip">CI/CD</span>
+          </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="item reveal">
+        <div class="card exp-head">
+          <span class="logo"><img src="assets/mindro-logo.png" alt="Mindro logo" loading="lazy" width="58" height="58"></span>
+          <div class="edu-body">
+          <div class="item-head">
+            <h3>AI &amp; Data Engineer</h3>
+            <a class="org" href="https://www.mindro.co/" target="_blank" rel="noopener">Mindro</a>
+            <span class="meta">Nov 2024 – Oct 2025 · Remote</span>
+            <span class="where">Amsterdam, Netherlands</span>
+          </div>
+          <ul class="bullets">
+            <li><strong>Improved pipeline throughput 2×</strong> by designing batching and asynchronous I/O operations for large-scale document processing.</li>
+            <li><strong>Achieved near-linear CPU scaling</strong> with a fault-tolerant multi-process architecture handling a <strong>200K+ document</strong> corpus efficiently.</li>
+            <li>Constructed asynchronous pipelines for <strong>ontology and knowledge graph extraction</strong> with page-level reference integrity.</li>
+            <li>Engineered the asynchronous AI agent core on <strong>LangChain / LangGraph</strong> with efficient memory management and evaluation hooks.</li>
+            <li>Conducted comprehensive benchmarking of vector database search relevance and latency for enterprise use cases.</li>
+            <li>Enhanced agent observability with <strong>Langfuse</strong>-based multi-metric tracing and automated performance dashboards.</li>
+          </ul>
+          <div class="chips" style="margin-top:14px">
+            <span class="chip">LangChain</span><span class="chip">LangGraph</span><span class="chip">Asyncio</span>
+            <span class="chip">Knowledge Graphs</span><span class="chip">Vector Databases</span><span class="chip">Langfuse</span>
+          </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="num">03</span><h2>Education</h2><span class="rule"></span></div>
+    <div class="timeline">
+
+      <div class="item reveal">
+        <div class="card edu-head">
+          <span class="logo"><img src="assets/ut-logo.svg" alt="University of Tehran logo" loading="lazy" width="58" height="58"></span>
+          <div class="edu-body">
+            <div class="item-head">
+              <h3>MSc in Data Science</h3>
+              <a class="org" href="https://ut.ac.ir/en" target="_blank" rel="noopener">University of Tehran</a>
+              <span class="meta">Oct 2025 – Present</span>
+              <span class="where">Tehran, Iran</span>
+            </div>
+            <p class="desc">Current CGPA <strong style="color:var(--fg)">19.92 / 20</strong>.</p>
+            <p class="desc"><em>Supervisor:</em> <a href="https://scholar.google.com/citations?user=Jf6cd6UAAAAJ&amp;hl=en" target="_blank" rel="noopener">Dr. Hadi Veisi</a>.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="item reveal">
+        <div class="card edu-head">
+          <span class="logo"><img src="assets/aut-logo.png" alt="Amirkabir University of Technology logo" loading="lazy" width="58" height="58"></span>
+          <div class="edu-body">
+            <div class="item-head">
+              <h3>BSc in Computer Science</h3>
+              <a class="org" href="https://aut.ac.ir/en" target="_blank" rel="noopener">Amirkabir University of Technology (Tehran Polytechnic)</a>
+              <span class="meta">Sep 2020 – Aug 2024</span>
+              <span class="where">Tehran, Iran</span>
+            </div>
+            <p class="desc">CGPA <strong style="color:var(--fg)">19.17 / 20</strong>.</p>
+            <p class="desc"><em>Thesis:</em> Adversarial Learning of Audio-Based Animated 3D Facial Expressions from Online Videos.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="item reveal">
+        <div class="card edu-head">
+          <span class="logo"><img src="assets/nodet-logo.svg" alt="NODET (SAMPAD) logo" loading="lazy" width="58" height="58"></span>
+          <div class="edu-body">
+            <div class="item-head">
+              <h3>High School Diploma in Mathematics</h3>
+              <a class="org" href="https://en.wikipedia.org/wiki/Shahid_Soltani_School" target="_blank" rel="noopener">Shahid Soltani 3 High School (NODET)</a>
+              <span class="meta">2017 – 2020</span>
+              <span class="where">Tehran, Iran</span>
+            </div>
+            <p class="desc">National Organization for Development of Exceptional Talents.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="sec-head reveal" style="margin-top:44px"><span class="num">//</span><h2 style="font-size:1.15rem">Honors &amp; Awards</h2><span class="rule"></span></div>
+    <div class="grid-2">
+      <div class="card reveal award">
+        <div class="medal">🏆</div>
+        <div>
+          <h3>Rank #4 Student</h3>
+          <span class="when">Sep 2020 – Aug 2024 · Amirkabir University of Technology</span>
+          <p>Ranked #4 among all Computer Science undergraduates with a CGPA of 19.17/20, and held the #1 ranking for 4 out of 8 semesters.</p>
+        </div>
+      </div>
+      <div class="card reveal award">
+        <div class="medal">🥈</div>
+        <div>
+          <h3>Silver Medal</h3>
+          <span class="when">2017 · Ibn Haitham Robotics Competition</span>
+          <p>Second place in the Road Smoothing Robots category at the national robotics competition.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="num">04</span><h2>Technical Skills</h2><span class="rule"></span></div>
+    <div class="grid-2">
+
+      <div class="card reveal skill-block">
+        <h4><i></i>LLM &amp; RAG</h4>
+        <div class="chips">
+          <span class="chip">vLLM</span><span class="chip">verl</span><span class="chip">LangChain</span>
+          <span class="chip">LangGraph</span><span class="chip">Hugging Face Transformers</span><span class="chip">MCP</span>
+          <span class="chip">Weaviate</span><span class="chip">OpenSearch</span><span class="chip">Qdrant</span>
+          <span class="chip">LLM-as-a-Judge Evaluation</span><span class="chip">Langfuse Observability</span><span class="chip">Docling</span>
+          <span class="chip">Unstructured</span>
+        </div>
+      </div>
+
+      <div class="card reveal skill-block">
+        <h4><i></i>Machine Learning &amp; Deep Learning</h4>
+        <div class="chips">
+          <span class="chip">PyTorch</span><span class="chip">Transformers</span><span class="chip">CNNs</span>
+          <span class="chip">RNNs</span><span class="chip">LSTM</span><span class="chip">Attention</span>
+          <span class="chip">RL Algorithms</span><span class="chip">RLHF</span><span class="chip">DPO</span>
+          <span class="chip">LoRA</span><span class="chip">QLoRA</span><span class="chip">Pandas</span>
+          <span class="chip">NumPy</span><span class="chip">SciPy</span><span class="chip">scikit-learn</span>
+          <span class="chip">Matplotlib</span><span class="chip">Seaborn</span>
+        </div>
+      </div>
+
+      <div class="card reveal skill-block">
+        <h4><i></i>Data Engineering</h4>
+        <div class="chips">
+          <span class="chip">Asyncio</span><span class="chip">Multiprocessing</span><span class="chip">Trino</span>
+          <span class="chip">Dask</span><span class="chip">Hatchet</span><span class="chip">gRPC</span>
+          <span class="chip">REST APIs</span><span class="chip">FastAPI</span><span class="chip">SQLAlchemy</span>
+        </div>
+      </div>
+
+      <div class="card reveal skill-block">
+        <h4><i></i>Knowledge Graphs</h4>
+        <div class="chips">
+          <span class="chip">FalkorDB</span><span class="chip">Cypher</span><span class="chip">Ontology Construction</span>
+          <span class="chip">Entity Linking</span><span class="chip">Temporal Knowledge Graphs</span>
+        </div>
+      </div>
+
+      <div class="card reveal skill-block">
+        <h4><i></i>Systems</h4>
+        <div class="chips">
+          <span class="chip">Docker</span><span class="chip">Kubernetes</span><span class="chip">GKE</span>
+          <span class="chip">GitHub Actions</span><span class="chip">Linux</span><span class="chip">Git</span>
+          <span class="chip">Poetry</span><span class="chip">uv</span><span class="chip">Weights &amp; Biases</span>
+        </div>
+      </div>
+
+      <div class="card reveal skill-block">
+        <h4><i></i>Programming</h4>
+        <div class="chips">
+          <span class="chip">Python (expert)</span><span class="chip">Advanced OOP</span><span class="chip">Async</span>
+          <span class="chip">C++</span><span class="chip">Java</span><span class="chip">SQL</span>
+          <span class="chip">MATLAB</span><span class="chip">Bash</span><span class="chip">LaTeX</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="num">05</span><h2>Selected Projects</h2><span class="rule"></span></div>
+    <div class="grid-2">
+
+      <div class="card proj reveal">
+        <div class="top"><h3>Adversarial Learning for 3D Facial Animation</h3><span class="yr">Feb – Aug 2024</span></div>
+        <p><em>Bachelor's thesis.</em> Real-time pipeline extracting 3D facial models from VoxCeleb frames using MediaPipe, triangulation, and Kalman filtering, visualized with Open3D, training FaceFormer in an adversarial setup.</p>
+        <div class="chips"><span class="chip">PyTorch</span><span class="chip">MediaPipe</span><span class="chip">Open3D</span><span class="chip">FaceFormer</span></div>
+      </div>
+
+      <div class="card proj reveal">
+        <div class="top"><h3>PPO Agent for Multi-Agent Competition</h3><span class="yr">Jun – Aug 2022</span></div>
+        <p><em>Isfahan University of Technology AI Cup 2022.</em> PPO agent built with RLlib and TensorFlow for a competitive, partially observable multi-agent environment.</p>
+        <div class="chips"><span class="chip">RLlib</span><span class="chip">TensorFlow</span><span class="chip">PPO</span><span class="chip">Multi-Agent RL</span></div>
+      </div>
+
+      <a class="card proj reveal" href="https://github.com/MohammadrezaAmani/UniLand" target="_blank" rel="noopener" style="color:inherit">
+        <div class="top"><h3>UniLand Archive Bot</h3><span class="yr">Dec 2022 – Jan 2023</span></div>
+        <p><em>Software engineering course project.</em> Telegram bot serving <strong style="color:var(--fg)">1,000+ users</strong> with <strong style="color:var(--fg)">5,000+ searches</strong> using asynchronous database queries.</p>
+        <div class="chips"><span class="chip">Pyrogram</span><span class="chip">SQLAlchemy</span><span class="chip">Flask</span><span class="chip">Asyncio</span></div>
+      </a>
+
+      <a class="card proj reveal" href="https://github.com/IlyaKhalafi/Course-Scheduler" target="_blank" rel="noopener" style="color:inherit">
+        <div class="top"><h3>Optimized Course Planner</h3><span class="yr">May 2022</span></div>
+        <p><em>Linear programming course project.</em> Course-plan optimizer built on linear optimization and the Simplex algorithm.</p>
+        <div class="chips"><span class="chip">Linear Programming</span><span class="chip">Simplex</span><span class="chip">Python</span></div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ACADEMIC EXPERIENCE -->
+<section id="academic">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="num">06</span><h2>Academic Experience</h2><span class="rule"></span></div>
+    <div class="teach reveal">
+      <div class="trow"><span class="logo"><img src="assets/aut-logo.png" alt="Amirkabir University of Technology logo" loading="lazy" width="40" height="40"></span><span class="t">Teaching Assistant · Numerical Linear Algebra</span><span class="i">Amirkabir University of Technology · <a href="https://scholar.google.com/citations?user=JkUyyw0AAAAJ&amp;hl=en" target="_blank" rel="noopener">Dr. Mehdi Dehghan</a> · 6 semesters</span><span class="d">Sep 2022 – Jul 2025</span></div>
+      <div class="trow"><span class="logo"><img src="assets/aut-logo.png" alt="Amirkabir University of Technology logo" loading="lazy" width="40" height="40"></span><span class="t">Teaching Assistant · Application of Numerical Linear Algebra in Data Mining</span><span class="i">Amirkabir University of Technology · <a href="https://scholar.google.com/citations?user=35zq7c4AAAAJ&amp;hl=en" target="_blank" rel="noopener">Dr. Fatemeh Shakeri</a> · 2 semesters</span><span class="d">Jan 2025 – Jan 2026</span></div>
+      <div class="trow"><span class="logo"><img src="assets/aut-logo.png" alt="Amirkabir University of Technology logo" loading="lazy" width="40" height="40"></span><span class="t">Teaching Assistant · Fundamentals of Deep Learning</span><span class="i">Amirkabir University of Technology · <a href="https://scholar.google.com/citations?user=35zq7c4AAAAJ&amp;hl=en" target="_blank" rel="noopener">Dr. Fatemeh Shakeri</a> · 1 semester</span><span class="d">Feb 2024 – Jul 2024</span></div>
+      <div class="trow"><span class="logo"><img src="assets/aut-logo.png" alt="Amirkabir University of Technology logo" loading="lazy" width="40" height="40"></span><span class="t">Teaching Assistant · Image Processing</span><span class="i">Amirkabir University of Technology · <a href="https://scholar.google.com/citations?user=5zZa0ekAAAAJ&amp;hl=en" target="_blank" rel="noopener">Dr. Mostafa Shamsi</a> · 3 semesters</span><span class="d">Jan 2023 – Jul 2024</span></div>
+      <div class="trow"><span class="logo"><img src="assets/aut-logo.png" alt="Amirkabir University of Technology logo" loading="lazy" width="40" height="40"></span><span class="t">Teaching Assistant · Artificial Intelligence &amp; Workshop</span><span class="i">Amirkabir University of Technology · <a href="https://scholar.google.com/citations?user=b7lfEJwAAAAJ&amp;hl=en" target="_blank" rel="noopener">Dr. Mehdi Ghatee</a> · 2 semesters</span><span class="d">Sep 2022 – Jan 2023</span></div>
+    </div>
+
+    <div class="sec-head reveal" style="margin-top:44px"><span class="num">//</span><h2 style="font-size:1.15rem">Languages</h2><span class="rule"></span></div>
+    <div class="grid-2">
+      <div class="card reveal">
+        <h4 style="font-size:14px;font-weight:700;margin-bottom:12px">Persian <span style="color:var(--fg-dim);font-weight:500">— Native Speaker</span></h4>
+        <div class="bar"><i style="width:100%"></i></div>
+        <p class="desc" style="font-size:13px">Reading · Writing · Speaking · Listening</p>
+      </div>
+      <div class="card reveal">
+        <h4 style="font-size:14px;font-weight:700;margin-bottom:12px">English <span style="color:var(--fg-dim);font-weight:500">— Professional Working Proficiency</span></h4>
+        <div class="bar"><i style="width:83%"></i></div>
+        <p class="desc" style="font-size:13px">TOEFL 99 &nbsp;·&nbsp; <span class="mono">R 27 · L 27 · S 22 · W 23</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="wrap">
+    <div class="contact reveal">
+      <h2>Let's build something</h2>
+      <p>Open to research collaborations and research positions in AI systems, LLMs, and data infrastructure.</p>
+      <div class="cta" style="justify-content:center">
+        <a class="btn primary" href="mailto:ilyakhalafi14@gmail.com"><span class="mark-tile"><svg viewBox="0 0 52 40" aria-hidden="true"><path fill="#4285f4" d="M3.64 40h8.18V20.18L0 10.91v25.45C0 38.37 1.64 40 3.64 40z"/><path fill="#34a853" d="M40.18 40h8.18c2.01 0 3.64-1.64 3.64-3.64V10.91l-11.82 9.27V40z"/><path fill="#fbbc04" d="M40.18 3.64v16.54L52 10.91V5.45c0-5.05-5.77-7.94-9.82-4.91l-2 1.5z"/><path fill="#ea4335" d="M11.82 20.18V3.64L26 14.27 40.18 3.64v16.54L26 30.82z"/><path fill="#c5221f" d="M0 5.45v5.46l11.82 9.27V3.64l-2-1.5C5.76-2.49 0 .4 0 5.45z"/></svg></span>ilyakhalafi14@gmail.com</a>
+        <a class="btn" href="mailto:ilya.khalafi@ut.ac.ir"><span class="mark-tile"><img src="assets/ut-logo.svg" alt="University of Tehran"></span>ilya.khalafi@ut.ac.ir</a>
+        <a class="btn" href="https://github.com/IlyaKhalafi" target="_blank" rel="noopener">github.com/IlyaKhalafi</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;width:100%">
+    <span>© <span id="yr"></span> Ilya Khalafi · Tehran, Iran</span>
+    <span class="mono">Built with plain HTML &amp; CSS.</span>
+  </div>
+</footer>
+
+<script>
+// theme: remember choice, default dark
+(function(){
+  var root=document.documentElement, btn=document.getElementById('theme');
+  var saved=null; try{saved=localStorage.getItem('theme')}catch(e){}
+  if(saved) root.dataset.theme=saved;
+  btn.addEventListener('click',function(){
+    var next=root.dataset.theme==='dark'?'light':'dark';
+    root.dataset.theme=next;
+    try{localStorage.setItem('theme',next)}catch(e){}
+  });
+})();
+
+// nav border on scroll
+var nav=document.getElementById('nav');
+addEventListener('scroll',function(){nav.classList.toggle('scrolled',scrollY>8)},{passive:true});
+
+// reveal on scroll
+var io=new IntersectionObserver(function(es){
+  es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})
+},{rootMargin:'0px 0px -8% 0px'});
+document.querySelectorAll('.reveal').forEach(function(el,i){el.style.transitionDelay=(i%4*45)+'ms';io.observe(el)});
+
+document.getElementById('yr').textContent=new Date().getFullYear();
+</script>
+</body>
+</html>
