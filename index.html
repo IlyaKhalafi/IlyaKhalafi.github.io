@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -187,6 +187,16 @@ ul.bullets li strong{color:var(--fg);font-weight:600}
 @media(max-width:620px){.item-head .where{text-align:left}}
 @media(max-width:620px){.logo{width:46px;height:46px}}
 
+/* collapsible job details */
+details.exp-details{margin-top:6px}
+details.exp-details summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);
+  padding:6px 0;user-select:none;list-style:none}
+details.exp-details summary::-webkit-details-marker{display:none}
+details.exp-details summary::before{content:"▸";margin-right:7px;display:inline-block;
+  transition:transform .15s}
+details.exp-details[open] summary::before{transform:rotate(90deg)}
+details.exp-details summary:hover{color:var(--fg)}
+
 /* award */
 .award{display:flex;gap:14px;align-items:flex-start}
 .award .medal{font-size:22px;line-height:1;flex:none;width:42px;height:42px;display:grid;place-items:center;
@@ -224,7 +234,6 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);margin-top:5
       <a href="#about">About</a>
       <a href="#experience">Experience</a>
       <a href="#education">Education</a>
-      <a href="#skills">Skills</a>
       <a href="#projects">Projects</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -316,18 +325,21 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);margin-top:5
             <span class="meta">Feb 2026 – Present</span>
             <span class="where">Tehran, Iran</span>
           </div>
-          <ul class="bullets">
-            <li>Achieved a score of <strong>80%</strong> on an in-house agent built for a <strong>Japanese partner company</strong>, retrieving facts from <strong>1.5M+ chunks</strong> using knowledge graphs, <strong>Qdrant</strong> hybrid search, <strong>Elasticsearch</strong> keyword search, and other tools.</li>
-            <li><strong>Scored 96%</strong> for another client by converting chart- and table-heavy documents into SQL tables and Qdrant hybrid indexes, answering time-interval questions with a <strong>Qwen3.6-35B</strong> model on <strong>DGX Spark</strong> hardware.</li>
-            <li>Currently fine-tuning <strong>Qwen3.6-35B</strong> with <strong>SFT + LiPO + GSPO</strong> using the <strong>verl</strong> library on a cluster of <strong>8× H200 GPUs</strong> for that agent.</li>
-            <li>Implemented a synthetic data generation pipeline spanning simple conversational, internal security, hallucination-check, SQL, and search-grounded categories with <em>k</em> rollouts for SFT/LiPO; SFT phase stable with <strong>MiCA</strong> initialization, testing LiPO before DAPO/GSPO.</li>
-          </ul>
-          <div class="chips" style="margin-top:14px">
-            <span class="chip">verl</span><span class="chip">SFT</span><span class="chip">Preference Optimization</span>
-            <span class="chip">vLLM</span><span class="chip">LangChain</span><span class="chip">LangGraph</span>
-            <span class="chip">Qdrant</span><span class="chip">Elasticsearch</span>
-            <span class="chip">Knowledge Graphs</span><span class="chip">Synthetic Data Generation</span>
-          </div>
+          <details class="exp-details">
+            <summary>Show details</summary>
+            <ul class="bullets">
+              <li>Achieved a score of <strong>80%</strong> on an in-house agent built for a <strong>Japanese partner company</strong>, retrieving facts from <strong>1.5M+ chunks</strong> using knowledge graphs, <strong>Qdrant</strong> hybrid search, <strong>Elasticsearch</strong> keyword search, and other tools.</li>
+              <li><strong>Scored 96%</strong> for another client by converting chart- and table-heavy documents into SQL tables and Qdrant hybrid indexes, answering time-interval questions with a <strong>Qwen3.6-35B</strong> model on <strong>DGX Spark</strong> hardware.</li>
+              <li>Currently fine-tuning <strong>Qwen3.6-35B</strong> with <strong>SFT + LiPO + GSPO</strong> using the <strong>verl</strong> library on a cluster of <strong>8× H200 GPUs</strong> for that agent.</li>
+              <li>Implemented a synthetic data generation pipeline spanning simple conversational, internal security, hallucination-check, SQL, and search-grounded categories with <em>k</em> rollouts for SFT/LiPO; SFT phase stable with <strong>MiCA</strong> initialization, testing LiPO before DAPO/GSPO.</li>
+            </ul>
+            <div class="chips" style="margin-top:14px">
+              <span class="chip">verl</span><span class="chip">SFT</span><span class="chip">Preference Optimization</span>
+              <span class="chip">vLLM</span><span class="chip">LangChain</span><span class="chip">LangGraph</span>
+              <span class="chip">Qdrant</span><span class="chip">Elasticsearch</span>
+              <span class="chip">Knowledge Graphs</span><span class="chip">Synthetic Data Generation</span>
+            </div>
+          </details>
           </div>
         </div>
       </div>
@@ -345,18 +357,21 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);margin-top:5
             Worked on <strong style="color:var(--fg)">OneMan-AI</strong>, a business intelligence AI agent
             for analyzing heterogeneous, islanded databases and files across enterprise environments.
           </p>
-          <ul class="bullets">
-            <li>Implemented <strong>MCP tools on top of Trino</strong> to integrate multiple data sources — from SQL and NoSQL databases to Excel files — through a unified query layer for the AI agent.</li>
-            <li>Built highly efficient workflows for ingesting structured and unstructured files, and deployed the data engineering pipeline with <strong>Hatchet</strong> for production file-processing workflows.</li>
-            <li>Developed the agent's <strong>schema exploration and intent recognition</strong> capabilities, plus key agentic workflow and backend components.</li>
-            <li>Deployed and maintained platform services including <strong>GitLab</strong>, GitLab Runner, <strong>Langfuse</strong>, and <strong>Portainer</strong>, with CI/CD pipelines for all microservices.</li>
-            <li>Implemented most of the backend services with <strong>Django</strong> and the web UI with <strong>Next.js</strong> for end-to-end delivery of the analytics platform.</li>
-          </ul>
-          <div class="chips" style="margin-top:14px">
-            <span class="chip">Trino</span><span class="chip">MCP</span><span class="chip">Hatchet</span>
-            <span class="chip">LangChain</span><span class="chip">LangGraph</span>
-            <span class="chip">Django</span><span class="chip">Next.js</span><span class="chip">CI/CD</span>
-          </div>
+          <details class="exp-details">
+            <summary>Show details</summary>
+            <ul class="bullets">
+              <li>Implemented <strong>MCP tools on top of Trino</strong> to integrate multiple data sources — from SQL and NoSQL databases to Excel files — through a unified query layer for the AI agent.</li>
+              <li>Built highly efficient workflows for ingesting structured and unstructured files, and deployed the data engineering pipeline with <strong>Hatchet</strong> for production file-processing workflows.</li>
+              <li>Developed the agent's <strong>schema exploration and intent recognition</strong> capabilities, plus key agentic workflow and backend components.</li>
+              <li>Deployed and maintained platform services including <strong>GitLab</strong>, GitLab Runner, <strong>Langfuse</strong>, and <strong>Portainer</strong>, with CI/CD pipelines for all microservices.</li>
+              <li>Implemented most of the backend services with <strong>Django</strong> and the web UI with <strong>Next.js</strong> for end-to-end delivery of the analytics platform.</li>
+            </ul>
+            <div class="chips" style="margin-top:14px">
+              <span class="chip">Trino</span><span class="chip">MCP</span><span class="chip">Hatchet</span>
+              <span class="chip">LangChain</span><span class="chip">LangGraph</span>
+              <span class="chip">Django</span><span class="chip">Next.js</span><span class="chip">CI/CD</span>
+            </div>
+          </details>
           </div>
         </div>
       </div>
@@ -371,18 +386,21 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);margin-top:5
             <span class="meta">Nov 2024 – Oct 2025 · Remote</span>
             <span class="where">Amsterdam, Netherlands</span>
           </div>
-          <ul class="bullets">
-            <li><strong>Improved pipeline throughput 2×</strong> by designing batching and asynchronous I/O operations for large-scale document processing.</li>
-            <li><strong>Achieved near-linear CPU scaling</strong> with a fault-tolerant multi-process architecture handling a <strong>200K+ document</strong> corpus efficiently.</li>
-            <li>Constructed asynchronous pipelines for <strong>ontology and knowledge graph extraction</strong> with page-level reference integrity.</li>
-            <li>Engineered the asynchronous AI agent core on <strong>LangChain / LangGraph</strong> with efficient memory management and evaluation hooks.</li>
-            <li>Conducted comprehensive benchmarking of vector database search relevance and latency for enterprise use cases.</li>
-            <li>Enhanced agent observability with <strong>Langfuse</strong>-based multi-metric tracing and automated performance dashboards.</li>
-          </ul>
-          <div class="chips" style="margin-top:14px">
-            <span class="chip">LangChain</span><span class="chip">LangGraph</span><span class="chip">Asyncio</span>
-            <span class="chip">Knowledge Graphs</span><span class="chip">Vector Databases</span><span class="chip">Langfuse</span>
-          </div>
+          <details class="exp-details">
+            <summary>Show details</summary>
+            <ul class="bullets">
+              <li><strong>Improved pipeline throughput 2×</strong> by designing batching and asynchronous I/O operations for large-scale document processing.</li>
+              <li><strong>Achieved near-linear CPU scaling</strong> with a fault-tolerant multi-process architecture handling a <strong>200K+ document</strong> corpus efficiently.</li>
+              <li>Constructed asynchronous pipelines for <strong>ontology and knowledge graph extraction</strong> with page-level reference integrity.</li>
+              <li>Engineered the asynchronous AI agent core on <strong>LangChain / LangGraph</strong> with efficient memory management and evaluation hooks.</li>
+              <li>Conducted comprehensive benchmarking of vector database search relevance and latency for enterprise use cases.</li>
+              <li>Enhanced agent observability with <strong>Langfuse</strong>-based multi-metric tracing and automated performance dashboards.</li>
+            </ul>
+            <div class="chips" style="margin-top:14px">
+              <span class="chip">LangChain</span><span class="chip">LangGraph</span><span class="chip">Asyncio</span>
+              <span class="chip">Knowledge Graphs</span><span class="chip">Vector Databases</span><span class="chip">Langfuse</span>
+            </div>
+          </details>
           </div>
         </div>
       </div>
@@ -468,78 +486,10 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);margin-top:5
   </div>
 </section>
 
-<!-- SKILLS -->
-<section id="skills">
-  <div class="wrap">
-    <div class="sec-head reveal"><span class="num">04</span><h2>Technical Skills</h2><span class="rule"></span></div>
-    <div class="grid-2">
-
-      <div class="card reveal skill-block">
-        <h4><i></i>LLM &amp; RAG</h4>
-        <div class="chips">
-          <span class="chip">vLLM</span><span class="chip">verl</span><span class="chip">LangChain</span>
-          <span class="chip">LangGraph</span><span class="chip">Hugging Face Transformers</span><span class="chip">MCP</span>
-          <span class="chip">Weaviate</span><span class="chip">OpenSearch</span><span class="chip">Qdrant</span>
-          <span class="chip">LLM-as-a-Judge Evaluation</span><span class="chip">Langfuse Observability</span><span class="chip">Docling</span>
-          <span class="chip">Unstructured</span>
-        </div>
-      </div>
-
-      <div class="card reveal skill-block">
-        <h4><i></i>Machine Learning &amp; Deep Learning</h4>
-        <div class="chips">
-          <span class="chip">PyTorch</span><span class="chip">Transformers</span><span class="chip">CNNs</span>
-          <span class="chip">RNNs</span><span class="chip">LSTM</span><span class="chip">Attention</span>
-          <span class="chip">RL Algorithms</span><span class="chip">RLHF</span><span class="chip">DPO</span>
-          <span class="chip">LoRA</span><span class="chip">QLoRA</span><span class="chip">Pandas</span>
-          <span class="chip">NumPy</span><span class="chip">SciPy</span><span class="chip">scikit-learn</span>
-          <span class="chip">Matplotlib</span><span class="chip">Seaborn</span>
-        </div>
-      </div>
-
-      <div class="card reveal skill-block">
-        <h4><i></i>Data Engineering</h4>
-        <div class="chips">
-          <span class="chip">Asyncio</span><span class="chip">Multiprocessing</span><span class="chip">Trino</span>
-          <span class="chip">Dask</span><span class="chip">Hatchet</span><span class="chip">gRPC</span>
-          <span class="chip">REST APIs</span><span class="chip">FastAPI</span><span class="chip">SQLAlchemy</span>
-        </div>
-      </div>
-
-      <div class="card reveal skill-block">
-        <h4><i></i>Knowledge Graphs</h4>
-        <div class="chips">
-          <span class="chip">FalkorDB</span><span class="chip">Cypher</span><span class="chip">Ontology Construction</span>
-          <span class="chip">Entity Linking</span><span class="chip">Temporal Knowledge Graphs</span>
-        </div>
-      </div>
-
-      <div class="card reveal skill-block">
-        <h4><i></i>Systems</h4>
-        <div class="chips">
-          <span class="chip">Docker</span><span class="chip">Kubernetes</span><span class="chip">GKE</span>
-          <span class="chip">GitHub Actions</span><span class="chip">Linux</span><span class="chip">Git</span>
-          <span class="chip">Poetry</span><span class="chip">uv</span><span class="chip">Weights &amp; Biases</span>
-        </div>
-      </div>
-
-      <div class="card reveal skill-block">
-        <h4><i></i>Programming</h4>
-        <div class="chips">
-          <span class="chip">Python (expert)</span><span class="chip">Advanced OOP</span><span class="chip">Async</span>
-          <span class="chip">C++</span><span class="chip">Java</span><span class="chip">SQL</span>
-          <span class="chip">MATLAB</span><span class="chip">Bash</span><span class="chip">LaTeX</span>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
 <!-- PROJECTS -->
 <section id="projects">
   <div class="wrap">
-    <div class="sec-head reveal"><span class="num">05</span><h2>Selected Projects</h2><span class="rule"></span></div>
+    <div class="sec-head reveal"><span class="num">04</span><h2>Selected Projects</h2><span class="rule"></span></div>
     <div class="grid-2">
 
       <div class="card proj reveal">
@@ -595,7 +545,7 @@ footer{position:relative;z-index:1;border-top:1px solid var(--line);margin-top:5
 </footer>
 
 <script>
-// theme: remember choice, default dark
+// theme: remember choice, default light
 (function(){
   var root=document.documentElement, btn=document.getElementById('theme');
   var saved=null; try{saved=localStorage.getItem('theme')}catch(e){}
